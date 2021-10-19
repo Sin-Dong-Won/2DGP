@@ -37,14 +37,23 @@ def update_character():
     cx = ((-t**3 + 2*t**2 - t)*p1[0] + (3*t**3 - 5*t**2 + 2)*p2[0] + (-3*t**3 + 4*t**2 + t)*p3[0] + (t**3 - t**2)*p4[0])/2
     cy = ((-t**3 + 2*t**2 - t)*p1[1] + (3*t**3 - 5*t**2 + 2)*p2[1] + (-3*t**3 + 4*t**2 + t)*p3[1] + (t**3 - t**2)*p4[1])/2
 
+<<<<<<< HEAD
     # 다음 코드가 하는 일은? 캐릭터가 달리는 속도를 정해 달리게 한다
     t += 0.001
+=======
+    # 다음 코드가 하는 일은?
+    t += 0.01
+>>>>>>> 945311c09d0395bcdea4ca4cc7a4343a38ab91f8
     if t >= 1.0:
         p1, p2, p3, p4 = get_next_four_points()
         t = 0
 
 
+<<<<<<< HEAD
     # 다음 코드의 목적은? # 다음에 향할 점이 x 좌표 상으로 왼쪽에 있을 경우 캐릭터가 바라보는 방향을 돌린다.
+=======
+    # 다음 코드의 목적은?
+>>>>>>> 945311c09d0395bcdea4ca4cc7a4343a38ab91f8
     running_right = cx > prev_cx
     prev_cx = cx
 
@@ -73,7 +82,11 @@ prev_cx = cx
 frame = 0
 hide_cursor()
 
+<<<<<<< HEAD
 num_points = 4
+=======
+num_points = 10
+>>>>>>> 945311c09d0395bcdea4ca4cc7a4343a38ab91f8
 target_points = []
 for i in range(num_points):
     target_points.append((random.randint(100, KPU_WIDTH-100), random.randint(100, KPU_HEIGHT-100)))
