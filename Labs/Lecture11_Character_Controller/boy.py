@@ -55,7 +55,7 @@ class RunState:
     def exit(boy, event):
         pass
 
-    def draw(boy):
+    def do(boy):
         boy.frame = (boy.frame + 1) % 8
         boy.timer -= 1
         boy.x += boy.velocity
@@ -78,7 +78,7 @@ class Boy:
         self.x, self.y = 800 // 2, 90
         self.image = load_image('animation_sheet.png')
         self.dir = 1
-        self.veocity = 0
+        self.velocity = 0
         self.frame = 0
         self.timer = 0
         self.event_que = []
