@@ -1,13 +1,17 @@
 from pico2d import *
 
 # Boy Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP = range(4)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, DASH_UP, DASH_DOWN = range(7)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
     (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
-    (SDL_KEYUP, SDLK_LEFT): LEFT_UP
+    (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
+    (SDL_KEYUP, SDLK_LSHIFT): DASH_UP,
+    (SDL_KEYUP, SDLK_RSHIFT): DASH_UP,
+    (SDL_KEYDOWN, SDLK_LSHIFT): DASH_DOWN,
+    (SDL_KEYDOWN, SDLK_RSHIFT): DASH_DOWN
 }
 
 
@@ -32,6 +36,9 @@ class IdleState:
     def do(boy):
         boy.frame = (boy.frame + 1) % 8
         boy.timer -= 1
+
+        if boy.timer == 0:
+            boy.add_event(SLEEP_TIMER)
 
     def draw(boy):
         if boy.dir == 1:
@@ -67,9 +74,53 @@ class RunState:
         else:
             boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
 
+class DashState:
+    def enter(boy, event):
+        boy.timer = 50
+
+    def exit(boy, event):
+        pass
+
+    def do(boy):
+        boy.frame = (boy.frame + 1) % 8
+        boy.timer -= 1
+        boy.x += boy.velocity * 2
+        boy.x = clamp(25, boy.x,800-25)
+
+        if boy.timer == 0:
+            boy.add_event(DASH_UP)
+
+    def draw(boy):
+        if boy.dir == 1:
+            boy.image.clip_draw(boy.frame * 100, 100, 100, 100, boy.x, boy.y)
+        else:
+            boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
+
+
+class SleepState:
+
+    def enter(boy, event):
+        boy.frame = 0
+
+    def exit(boy, event):
+        pass
+
+    def do(boy):
+        boy.frame = (boy.frame + 1) % 8
+
+    def draw(boy):
+        if boy.dir == 1:
+            boy.image.clip_composite_draw(boy.frame * 100, 300, 100, 100, 3.141592 / 2, '', boy.x - 25, boy.y - 25, 100, 100)
+
+        else:
+            boy.image.clip_composite_draw(boy.frame * 100, 300, 100, 100, -3.141592 / 2, '', boy.x + 25, boy.y - 25, 100, 100)
+
+
 next_state_table = {
-    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState},
-    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN:IdleState}
+    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, DASH_DOWN: IdleState, DASH_UP: IdleState},
+    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN:IdleState, DASH_UP: RunState,  DASH_DOWN: DashState},
+    SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState},
+    DashState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, DASH_UP: RunState}
 }
 
 class Boy:
@@ -107,6 +158,7 @@ class Boy:
 
     def draw(self):
         self.cur_state.draw(self)
+        debug_print('Velocity :' + str(self.velocity) + ' Dir :' + str(self.dir))
 
 
     def handle_event(self, event):
