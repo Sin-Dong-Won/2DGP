@@ -132,7 +132,6 @@ class Boy:
         debug_print('Velocity :' + str(self.velocity) + '  Dir:' + str(self.dir))
 
     def fire_ball(self):
-        print('FIRE BALL')
         ball = Ball(self.x, self.y, self.dir * 3)
         game_world.add_object(ball, 1)
 
