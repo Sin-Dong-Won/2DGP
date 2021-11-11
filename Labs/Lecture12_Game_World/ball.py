@@ -16,4 +16,8 @@ class Ball:
         self.x += self.velocity
 
         if self.x < 25 or self.x > 1600 - 25:
+<<<<<<< HEAD
             game_world.remove_object(self)
+=======
+            game_world.remove_object(self) # 축구공이 맵 밖을 벗어났으므로 제거한다.
+>>>>>>> 0e1161919e5cc36011b5f5a0214632f13224fe0c

@@ -19,15 +19,22 @@ def remove_object(o):
             del o
             break
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 0e1161919e5cc36011b5f5a0214632f13224fe0c
 def clear():
     for o in all_objects():
         del o
     for l in objects:
         l.clear()
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0e1161919e5cc36011b5f5a0214632f13224fe0c
 def destroy():
     clear()
     objects.clear()
