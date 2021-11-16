@@ -16,6 +16,7 @@ TIME_PER_ACTION = 2
 ACTION_PER_TIME = 10.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 1
 
+
 class Bird:
     def __init__(self):
         self.x = random.randint(600, 800 + 1)
