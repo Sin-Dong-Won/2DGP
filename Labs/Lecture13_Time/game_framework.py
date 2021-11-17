@@ -44,7 +44,7 @@ stack = None
 
 def change_state(state):
     global stack
-    if (len(stack) > 0):
+    if len(stack) > 0:
         # execute the current state's exit function
         stack[-1].exit()
         # remove the current state
@@ -56,7 +56,7 @@ def change_state(state):
 
 def push_state(state):
     global stack
-    if (len(stack) > 0):
+    if len(stack) > 0:
         stack[-1].pause()
     stack.append(state)
     state.enter()
@@ -65,16 +65,15 @@ def push_state(state):
 
 def pop_state():
     global stack
-    if (len(stack) > 0):
+    if len(stack) > 0:
         # execute the current state's exit function
         stack[-1].exit()
         # remove the current state
         stack.pop()
 
     # execute resume function of the previous state
-    if (len(stack) > 0):
+    if len(stack) > 0:
         stack[-1].resume()
-
 
 
 def quit():
@@ -82,9 +81,9 @@ def quit():
     running = False
 
 
-
 import time
 frame_time = 0.0
+
 
 def run(start_state):
     global running, stack
@@ -94,7 +93,7 @@ def run(start_state):
 
     global frame_time
     current_time = time.time()
-    while (running):
+    while running:
         stack[-1].handle_events()
         stack[-1].update()
         stack[-1].draw()
@@ -104,7 +103,7 @@ def run(start_state):
         # print("Frame Time: %f sec, Frame Rate: %f fps" %(frame_time, frame_rate))
 
     # repeatedly delete the top of the stack
-    while (len(stack) > 0):
+    while len(stack) > 0:
         stack[-1].exit()
         stack.pop()
 
@@ -112,7 +111,6 @@ def run(start_state):
 def test_game_framework():
     start_state = TestGameState('StartState')
     run(start_state)
-
 
 
 if __name__ == '__main__':

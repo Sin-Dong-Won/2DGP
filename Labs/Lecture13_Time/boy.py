@@ -14,6 +14,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 # Boy Action Speed
 # fill expressions correctly
+
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 8
@@ -25,9 +26,13 @@ RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE = range(6)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
+
     (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
+
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
+
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
+
     (SDL_KEYDOWN, SDLK_SPACE): SPACE
 }
 
@@ -159,7 +164,9 @@ class Boy:
         self.font.draw(self.x - 60, self.y + 50, '(Time: %3.2f)' % get_time(), (255, 255, 0))
 
     def handle_event(self, event):
+
         if (event.type, event.key) in key_event_table:
+            print((event.type, event.key))
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
 

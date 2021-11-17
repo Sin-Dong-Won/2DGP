@@ -1,7 +1,7 @@
 from pico2d import *
 from ball import Ball
 
-<<<<<<< HEAD
+
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER = range(5)
 
@@ -10,7 +10,7 @@ key_event_table = {
     (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP
-=======
+}
 history = [] # (현재 상태, 리스트) 튜플 리스트
 
 # Boy Event
@@ -29,7 +29,7 @@ key_event_table = {
     (SDL_KEYUP, SDLK_RSHIFT): SHIFT_UP,
     (SDL_KEYDOWN, SDLK_LSHIFT): SHIFT_DOWN,
     (SDL_KEYDOWN, SDLK_RSHIFT): SHIFT_DOWN
->>>>>>> 0e1161919e5cc36011b5f5a0214632f13224fe0c
+
 }
 
 
@@ -110,12 +110,6 @@ class SleepState:
         else:
             boy.image.clip_composite_draw(boy.frame * 100, 200, 100, 100, -3.141592 / 2, '', boy.x + 25, boy.y - 25, 100, 100)
 
-<<<<<<< HEAD
-
-next_state_table = {
-    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState},
-    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState},
-=======
 class DashState:
     def enter(boy, event):
         boy.timer = 50
@@ -138,16 +132,12 @@ class DashState:
         else:
             boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
 
-
-
 next_state_table = {
     DashState: {SHIFT_UP: RunState, DASH_TIMER: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState},
-    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, SHIFT_DOWN : IdleState, SHIFT_UP: IdleState},
+    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, SHIFT_DOWN: IdleState, SHIFT_UP: IdleState},
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SHIFT_DOWN: DashState, SHIFT_UP: RunState},
->>>>>>> 0e1161919e5cc36011b5f5a0214632f13224fe0c
     SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState}
 }
-
 
 class Boy:
 
@@ -169,8 +159,7 @@ class Boy:
         if len(self.event_que) > 0:
             event = self.event_que.pop()
             self.cur_state.exit(self, event)
-<<<<<<< HEAD
-=======
+
 
             try:
                 history.append((self.cur_state.__name__, event_name[event]))
@@ -178,8 +167,7 @@ class Boy:
             except:
                 print('state: ', self.cur_state.__name__, 'events:', event)
                 exit(-1)
-                
->>>>>>> 0e1161919e5cc36011b5f5a0214632f13224fe0c
+
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
 
@@ -190,14 +178,14 @@ class Boy:
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
-<<<<<<< HEAD
+
             self.add_event(key_event)
-=======
+
 
             if DEBUG_KEY == key_event:
                 print(history[-10:])
 
             else:
                 self.add_event(key_event)
->>>>>>> 0e1161919e5cc36011b5f5a0214632f13224fe0c
+
 

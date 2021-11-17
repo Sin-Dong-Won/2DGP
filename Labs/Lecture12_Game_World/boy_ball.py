@@ -68,7 +68,7 @@ class RunState:
         boy.frame = (boy.frame + 1) % 8
         boy.timer -= 1
         boy.x += boy.velocity
-        boy.x = clamp(25, boy.x, 1600 - 25)
+        # boy.x = clamp(25, boy.x, 1600 - 25)
 
     def draw(boy):
         if boy.velocity == 1:
