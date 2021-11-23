@@ -91,7 +91,7 @@ def update():
             game_world.remove_object(ball)
         for i in balls:
             collide(grass, ball)
-
+            ball.stop()
 
     # delay(0.9)
 
