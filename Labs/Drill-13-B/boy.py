@@ -1,7 +1,8 @@
 import game_framework
 from pico2d import *
 from ball import Ball
-
+import colilision
+import server
 import game_world
 
 # Boy Run Speed
@@ -15,8 +16,6 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 8
-
-
 
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE = range(6)
@@ -81,7 +80,7 @@ class RunState:
             boy.fire_ball()
 
     def do(boy):
-        #boy.frame = (boy.frame + 1) % 8
+        # boy.frame = (boy.frame + 1) % 8
         boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         boy.x += boy.velocity * game_framework.frame_time
         boy.x = clamp(25, boy.x, 1600 - 25)
@@ -111,15 +110,12 @@ class SleepState:
             boy.image.clip_composite_draw(int(boy.frame) * 100, 200, 100, 100, -3.141592 / 2, '', boy.x + 25, boy.y - 25, 100, 100)
 
 
-
-
-
-
 next_state_table = {
     IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, SPACE: IdleState},
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE: RunState},
     SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState}
 }
+
 
 class Boy:
 
@@ -135,24 +131,19 @@ class Boy:
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
 
-        self.brick = (0, 0)
+        self.parent = None
 
     def get_bb(self):
         # fill here
         return self.x - 30, self.y - 30, self.x + 30, self.y + 50
 
-
-
     def fire_ball(self):
         pass
-
 
     def add_event(self, event):
         self.event_que.insert(0, event)
 
     def update(self):
-        self.x += self.brick[0]
-
         self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
@@ -160,8 +151,13 @@ class Boy:
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
 
+        if self.parent:
+            self.x += self.parent.speed * game_framework.frame_time
+            self.x = clamp(self.parent.x - 90, self.x, self.parent.x + 90)
 
-
+        for brick in server.bricks:
+            if colilision.collide(self, brick):
+                self.set_parent(brick)
 
     def draw(self):
         self.cur_state.draw(self)
@@ -174,9 +170,7 @@ class Boy:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
 
-    def riding(self, brick):
-        self.x = brick[0]
-        self.y = brick[1] + 60
-
-
+    def set_parent(self, brick):
+        self.parent = brick
+        self.x, self.y = brick.x + brick.BOY_XD, brick.y + brick.BOY_YD
 
